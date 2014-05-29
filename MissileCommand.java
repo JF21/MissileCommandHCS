@@ -60,11 +60,16 @@ Graphics2D gg;
 int xLoc=450, yLoc=300;
 int m=0;
 int count=0;
+int level=1; int at=1;
+int[] missileMax = {20,25,30,40};
+int missileCount = 0;
+
 
 public int dirX = -1;
 public int dirY = -1;
 
-double probL, probS;
+double[] probL = {0.6,0.9,1.2,1.5};
+double[] probS = {0.3,0.4,0.5,0.6};
 
 public MissileCommand()
 {
@@ -99,11 +104,6 @@ public void worldSetup(Graphics g)
 							back = ImageIO.read(new File("images/back.png"));
 
 			}catch(IOException e){}
-
-	probL = 0.6;
-	probS = 0.3;
-
-
 }
 
 
@@ -126,7 +126,7 @@ public void run()
 					}else{
 						missilesE.get(i).move();
 
-						if(Math.random()*100 < probS){
+						if(Math.random()*100 < probS[at-1]){
 							if(missilesE.get(i).type == Missile.ENEMY && !missilesE.get(i).breaked){
 								missilesE.add(Missile.newMissile(missilesE.get(i).current,Missile.endPoint(),Missile.CHILD));
 								missilesE.get(i).breaked = true;
@@ -157,6 +157,7 @@ public void run()
 							if(missilesE.get(i).current.distance(missilesM.get(j).current) < 20){
 								missilesM.get(j).dead = true;
 								missilesE.get(i).dead = true;
+								missileCount++;
 							}
 
 						}
@@ -180,8 +181,17 @@ public void run()
 
 			}
 
-			if(Math.random()*100 < probL){
+
+			if(Math.random()*100 < probL[level-1]){
 				missilesE.add(Missile.newMissile(Missile.ENEMY));
+			}
+
+			if(missileCount > missileMax[at-1]){
+				level++;
+				missileCount = 0;
+				if(at < missileMax.length){
+					at++;
+				}
 			}
 
 			repaint();
@@ -236,6 +246,10 @@ public void paint(Graphics g)
 			m.draw(bufgfx);
 		}
 	}
+
+	bufgfx.setColor(Color.WHITE);
+	bufgfx.setFont(new Font("Times New Roman",Font.BOLD,40));
+	bufgfx.drawString("Level "+level+" "+missileCount,50,100);
 
 	g.drawImage(bufimg,0,0,this);
 
