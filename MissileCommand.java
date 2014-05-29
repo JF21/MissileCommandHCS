@@ -200,6 +200,8 @@ private class mouseHandler extends MouseAdapter
 
 	public void mousePressed(MouseEvent e)
 	{
+
+		if(e.getPoint().getY() < origin.getY())
 		missilesM.add(new Missile(origin,e.getPoint(),Missile.MINE));
 		//go = true;
 	}
