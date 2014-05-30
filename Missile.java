@@ -20,7 +20,7 @@ public class Missile{
 	int r = 0;
 	int type;
 	double d;
-	Color c = Color.WHITE;
+	Color c = Color.ORANGE;
 	boolean dead=false;
 	boolean breaked=false;
 
