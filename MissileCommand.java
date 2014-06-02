@@ -46,6 +46,7 @@ ArrayList<Missile> missilesM = new ArrayList<Missile>();
 
 /*************/
 
+int mLeft = 0;
 int r = rInit;
 boolean go = true;
 int score = 0;
@@ -61,20 +62,23 @@ int xLoc=450, yLoc=300;
 int m=0;
 int count=0;
 int level=1; int at=1;
-int[] missileMax = {20,25,30,40};
+int[] missileMax = {10,15,20,20};
 int missileCount = 0;
 
 
 public int dirX = -1;
 public int dirY = -1;
 
-double[] probL = {0.6,0.9,1.2,1.5};
-double[] probS = {0.3,0.4,0.5,0.6};
+double[] probL = {0.5,0.7,0.9 ,1.1};
+double[] probS = {0.2,0.3,0.4,0.5};
+
+int vleft = 0;
 
 public MissileCommand()
 {
 	super("Moving Exclamation Point ");
 	addMouseListener(new mouseHandler());
+	addKeyListener(new keyL());
 	setSize(WIDTH,HEIGHT);
 	setVisible(true);
 	Thread animator = new Thread(this);
@@ -163,9 +167,10 @@ public void run()
 						}
 					}
 
-				if(targets.size()>0){
+				if(m!=0){
+			//		System.out.println(targets.size());
 						for(int j = 0; j<targets.size(); j++){
-							if(missilesE.get(i).current.distance(targets.get(j).center) < Target.RADIUS){
+						if(missilesE.get(i).current.distance(targets.get(j).center) < Target.RADIUS){
 								targets.get(j).decHealth();
 								missilesE.get(i).dead = true;
 							}
@@ -173,7 +178,11 @@ public void run()
 							if(targets.get(j).dead){
 								targets.remove(j);
 								j--;
+							}else{
+
+							targets.get(j).move(vleft);
 							}
+					//	System.out.println(targets.get(j));
 						}
 				}
 
@@ -189,9 +198,17 @@ public void run()
 			if(missileCount > missileMax[at-1]){
 				level++;
 				missileCount = 0;
-				if(at < missileMax.length){
+				if(at < missileMax.length-1){
 					at++;
 				}
+			}
+
+			if(m!=0){
+				vleft+=(mLeft*15);
+				if(vleft < 0)
+					vleft = 0;
+				if(vleft > WIDTH)
+					vleft = WIDTH;
 			}
 
 			repaint();
@@ -219,13 +236,47 @@ private class mouseHandler extends MouseAdapter
 
 }
 
+private class keyL extends KeyAdapter{
+
+
+	public void keyReleased(KeyEvent e){
+		int key = e.getKeyCode();
+
+		switch(key){
+			case KeyEvent.VK_F: mLeft = 0;
+				break;
+			case KeyEvent.VK_A: mLeft = 0;
+				break;
+		}
+	}
+
+	public void keyPressed(KeyEvent e){
+		int key = e.getKeyCode();
+
+
+		switch(key){
+			case KeyEvent.VK_F: mLeft=1;
+								break;
+
+			case KeyEvent.VK_A: mLeft=-1;
+								break;
+		}
+	}
+
+}
+
 public void paint(Graphics g)
 {
 	if(m==0)
 		worldSetup(bufgfx);
 
 	bufgfx.setColor(color);
-	bufgfx.drawImage(back,0,0,WIDTH,HEIGHT,null);
+
+	int cut = vleft>>1;
+
+	bufgfx.drawImage(back,-100-cut,0,WIDTH,HEIGHT,null);
+	bufgfx.drawImage(back,850-cut,0,WIDTH,HEIGHT,null);
+
 	bufgfx.setColor(Color.BLACK);
 
 

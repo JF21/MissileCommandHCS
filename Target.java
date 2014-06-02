@@ -14,7 +14,7 @@ public class Target{
 
 	private int health = 5;
 
-	int x,y;
+	int x,y,xC;
 	Color c;
 	Point center;
 	Image img;
@@ -24,13 +24,14 @@ public class Target{
 
 
 	public Target(int x, int y , Color c){
-		this.x = x;
+		this.xC = x;
 		this.y = y;
 		this.c = c;
 		center = new Point(x+RADIUS, y+RADIUS);
 	}
 
 	public Target(int x, int y , Color c, boolean fromImage){
+			this.xC = x;
 			this.x = x;
 			this.y = y;
 			this.c = c;
@@ -66,12 +67,19 @@ public class Target{
 		}
 	}
 
+	public void move(int v){
+		x = xC-v;
+		center = new Point(x+RADIUS,y+RADIUS);
+		//System.out.println(xC+" "+x);
+	}
+
 	public void draw(Graphics g){
 		if(img != null){
 
 
 			g.drawImage(img,x,y,(2*RADIUS),(2*RADIUS),null);
 
+			g.setFont(new Font("Arial",Font.PLAIN,12));
 			g.setColor(Color.BLACK);
 			g.drawString(health+"",x+30,y+30);
 		}else{
@@ -81,6 +89,10 @@ public class Target{
 			g.setColor(Color.BLACK);
 			g.drawString(health+"",x+30,y+30);
 		}
+	}
+
+	public String toString(){
+		return x+" "+y+" "+xC;
 	}
 
 }
