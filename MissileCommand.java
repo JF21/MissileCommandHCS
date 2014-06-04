@@ -36,7 +36,7 @@ Integer dR = 2;
 
 /*DATA*/
 
-Point origin = new Point(WIDTH/2,HEIGHT-75);
+Point origin = new Point(WIDTH/2,HEIGHT-90);
 
 ArrayList<Target> targets = new ArrayList<Target>();
 
@@ -49,12 +49,13 @@ ArrayList<Missile> missilesM = new ArrayList<Missile>();
 int mLeft = 0;
 int r = rInit;
 boolean go = true;
+
 int score = 0;
 Color color = Color.BLACK;//new Color(255,255,255);
 
 String worldString= "";
 Graphics bufgfx;
-Image bufimg, back;
+Image bufimg, back, tower;
 BufferedImage grid;
 Thread mythread;
 Graphics2D gg;
@@ -69,8 +70,8 @@ int missileCount = 0;
 public int dirX = -1;
 public int dirY = -1;
 
-double[] probL = {0.5,0.7,0.9 ,1.1};
-double[] probS = {0.2,0.3,0.4,0.5};
+double[] probL = {5,0.5,0.7,0.9 ,1.1};
+double[] probS = {2.5,0.2,0.3,0.4,0.5};
 
 int vleft = 0;
 
@@ -87,6 +88,7 @@ public MissileCommand()
 
 public void worldSetup(Graphics g)
 {
+	go = true;
 	m++;
 	int w = this.getWidth();
 	int h = this.getHeight();
@@ -104,8 +106,13 @@ public void worldSetup(Graphics g)
 	targets.add(new Target(550,550,Color.ORANGE,true));
 	targets.add(new Target(700,550,Color.ORANGE,true));
 	targets.add(new Target(850,550,Color.ORANGE,true));
+
+	missilesE.clear();
+	missilesM.clear();
+
 				try{
 							back = ImageIO.read(new File("images/back.png"));
+							tower = ImageIO.read(new File("images/tower.png"));
 
 			}catch(IOException e){}
 }
@@ -121,7 +128,12 @@ public void run()
 	{
 		try
 		{
-			count++;
+				count++;
+				if(count > 2*FPS){
+				count = 0;
+			}
+			if(go){
+
 			if(missilesE.size()>0){
 				for(int i = 0; i<missilesE.size(); i++){
 					if(missilesE.get(i).dead){
@@ -184,6 +196,9 @@ public void run()
 							}
 					//	System.out.println(targets.get(j));
 						}
+						if(targets.size()==0){
+							go = false;
+						}
 				}
 
 				}
@@ -211,7 +226,8 @@ public void run()
 					vleft = WIDTH;
 			}
 
-			repaint();
+			}
+				repaint();
 			Thread.sleep(FRAMERATE);
 
 		}
@@ -230,7 +246,10 @@ private class mouseHandler extends MouseAdapter
 
 		if(e.getPoint().getY() < origin.getY())
 		missilesM.add(new Missile(origin,e.getPoint(),Missile.MINE));
-		//go = true;
+		if(!go){
+			m = 0;
+			go = true;
+		}
 	}
 
 
@@ -270,12 +289,16 @@ public void paint(Graphics g)
 	if(m==0)
 		worldSetup(bufgfx);
 
+
 	bufgfx.setColor(color);
 
 	int cut = vleft>>1;
 
 	bufgfx.drawImage(back,-100-cut,0,WIDTH,HEIGHT,null);
 	bufgfx.drawImage(back,850-cut,0,WIDTH,HEIGHT,null);
+
+	if(go){
+	bufgfx.drawImage(tower,(int)origin.getX()-50,(int)origin.getY(),100,136,null);
 
 	bufgfx.setColor(Color.BLACK);
 
@@ -300,7 +323,18 @@ public void paint(Graphics g)
 
 	bufgfx.setColor(Color.WHITE);
 	bufgfx.setFont(new Font("Times New Roman",Font.BOLD,40));
-	bufgfx.drawString("Level "+level+" "+missileCount,50,100);
+	bufgfx.drawString("Level "+level,25,75);
+	bufgfx.drawString("Missiles Blocked:"+missileCount,25,125);
+	}else{
+		if(count < FPS){
+
+			bufgfx.setColor(Color.WHITE);
+			bufgfx.setFont(new Font("Courier",Font.BOLD,200));
+			bufgfx.drawString("GAME",300,200);
+			bufgfx.drawString("OVER",290,400);
+		}
+
+	}
 
 	g.drawImage(bufimg,0,0,this);
 
