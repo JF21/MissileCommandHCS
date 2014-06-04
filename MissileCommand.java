@@ -70,8 +70,8 @@ int missileCount = 0;
 public int dirX = -1;
 public int dirY = -1;
 
-double[] probL = {5,0.5,0.7,0.9 ,1.1};
-double[] probS = {2.5,0.2,0.3,0.4,0.5};
+double[] probL = {0.5,0.7,0.9 ,1.1};
+double[] probS = {0.2,0.3,0.4,0.5};
 
 int vleft = 0;
 
