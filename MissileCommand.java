@@ -78,7 +78,7 @@ public MissileCommand()
 {
 	super("Moving Exclamation Point ");
 	addMouseListener(new mouseHandler());
-	addKeyListener(new keyL());
+	//addKeyListener(new keyL());
 	setSize(WIDTH,HEIGHT);
 	setVisible(true);
 	Thread animator = new Thread(this);
@@ -236,7 +236,7 @@ private class mouseHandler extends MouseAdapter
 
 }
 
-private class keyL extends KeyAdapter{
+/*private class keyL extends KeyAdapter{
 
 
 	public void keyReleased(KeyEvent e){
@@ -263,7 +263,7 @@ private class keyL extends KeyAdapter{
 		}
 	}
 
-}
+}*/
 
 public void paint(Graphics g)
 {
