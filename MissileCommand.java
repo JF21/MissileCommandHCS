@@ -136,7 +136,7 @@ public void run()
 
 			if(missilesE.size()>0){
 				for(int i = 0; i<missilesE.size(); i++){
-					if(missilesE.get(i).dead){
+					if(missilesE.get(i).state == Missile.DEAD){
 						missilesE.remove(i);
 						i--;
 					}else{
@@ -155,7 +155,7 @@ public void run()
 
 			if(missilesM.size()>0){
 				for(int i = 0; i<missilesM.size(); i++){
-					if(missilesM.get(i).dead){
+					if(missilesM.get(i).state == Missile.DEAD){
 						missilesM.remove(i);
 						i--;
 					}else{
@@ -171,8 +171,9 @@ public void run()
 					if(missilesM.size()>0){
 						for(int j = 0; j<missilesM.size(); j++){
 							if(missilesE.get(i).current.distance(missilesM.get(j).current) < 20){
-								missilesM.get(j).dead = true;
-								missilesE.get(i).dead = true;
+								missilesM.get(j).state = Missile.DEAD;
+								missilesE.get(i).state = Missile.BURST;
+								missilesE.get(i).resetR();
 								missileCount++;
 							}
 
@@ -184,7 +185,7 @@ public void run()
 						for(int j = 0; j<targets.size(); j++){
 						if(missilesE.get(i).current.distance(targets.get(j).center) < Target.RADIUS){
 								targets.get(j).decHealth();
-								missilesE.get(i).dead = true;
+								missilesE.get(i).state = Missile.DEAD;
 							}
 
 							if(targets.get(j).dead){
@@ -251,8 +252,6 @@ private class mouseHandler extends MouseAdapter
 			go = true;
 		}
 	}
-
-
 }
 
 /*private class keyL extends KeyAdapter{
@@ -324,7 +323,7 @@ public void paint(Graphics g)
 	bufgfx.setColor(Color.WHITE);
 	bufgfx.setFont(new Font("Times New Roman",Font.BOLD,40));
 	bufgfx.drawString("Level "+level,25,75);
-	bufgfx.drawString("Missiles Blocked:"+missileCount,25,125);
+	bufgfx.drawString("Missiles Blocked: "+missileCount,25,125);
 	}else{
 		if(count < FPS){
 
